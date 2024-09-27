@@ -14,9 +14,6 @@ const catchAsync = (handler: RequestHandler) => {
 const createStudent = catchAsync(async (req, res, next) => {
   const { password, student: studentData } = req.body;
 
-  // creating a schema validation using zod
-  // const zodParseData = studentValidationSchema.parse(studentData);
-  // console.log(student);
   const result = await UserServices.createStudentIntoDB(password, studentData);
   sendResponse(res, {
     statusCode: httpStatus.OK,
