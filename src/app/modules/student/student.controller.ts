@@ -2,12 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { studentService } from "./student.service";
-
-const catchAsync = (handler: RequestHandler) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    Promise.resolve(handler(req, res, next)).catch((err) => next(err));
-  };
-};
+import catchAsync from "../../utils/catchAsync";
 
 const getAllStudents = catchAsync(async (req, res, next) => {
   const result = await studentService.getAllStudentsFromDB();
