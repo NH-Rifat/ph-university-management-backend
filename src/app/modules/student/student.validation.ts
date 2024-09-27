@@ -16,7 +16,7 @@ export const createStudentValidationSchema = z.object({
       }),
       gender: z.enum(["male", "female"]),
       // dateOfBirth will be the optional field as well
-      dateOfBirth: z.string().optional(),
+      dateOfBirth: z.date().optional(),
       email: z.string().email({
         message: "Invalid email format",
       }),
