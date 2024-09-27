@@ -67,6 +67,5 @@ export const studentValidationSchema = z.object({
     }),
   }),
   profileImg: z.string(),
-  // isActive: z.enum(['active', 'inactive']),
   isDeleted: z.boolean(),
 });
