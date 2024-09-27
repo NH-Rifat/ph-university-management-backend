@@ -40,14 +40,3 @@ export type TStudent = {
   profileImg: string;
   isDeleted: boolean;
 };
-
-// export interface StudentModelType extends Model<TStudent> {
-//   isUserExists(id: string): Promise<TStudent | null>;
-// }
-
-// for creating static methods
-// export type TStudentMethod = {
-//   isUserExists(id: string): Promise<TStudent | null>;
-// };
-
-// export type StudentModelType = Model<TStudent, {}, TStudentMethod>;
