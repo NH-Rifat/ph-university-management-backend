@@ -1,11 +1,16 @@
 import config from "../../config";
+import { AcademicSemesterModel } from "../academicSemester/academicSemester.model";
 // import { TAcademicSemester } from "../academicSemester/academicSemester.interface";
 import { TStudent } from "../student/student.interface";
 import { studentModel } from "../student/student.model";
 import { TUser } from "./user.interface";
 import { UserModel } from "./user.model";
+import { generateStudentId } from "./user.utils";
 
-const createStudentIntoDB = async (password: string, studentData: TStudent) => {
+const createStudentIntoDB = async (
+  password: string,
+  studentDataPayload: TStudent
+) => {
   //creating a user object
   const userData: Partial<TUser> = {};
   // if password is not provided, use the default password
@@ -14,12 +19,15 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
   // set student role
   userData.role = "student";
 
-  // generate student id based on year semesterCOde 4 digit number
-  // const generateStudentId = (studentData: TAcademicSemester) => {
-
-  // }
-  //set manually generated id
-  userData.id = "2030100003";
+  // find academic semester info
+  const findAdmissionSemester = await AcademicSemesterModel.findById(
+    studentDataPayload.admissionSemester
+  );
+  //set generated id
+  if (!findAdmissionSemester) {
+    throw new Error("Admission semester not found");
+  }
+  userData.id = await generateStudentId(findAdmissionSemester);
 
   //create a user
   const result = await UserModel.create(userData);
@@ -27,11 +35,11 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
   //create a student
   if (Object.keys(result).length > 0) {
     //set id, _id as user
-    studentData.id = result.id;
-    studentData.user = result._id; //reference_id
-    studentData.admissionSemester = result._id;
+    studentDataPayload.id = result.id;
+    studentDataPayload.user = result._id; //reference_id
+    // studentDataPayload.admissionSemester = result._id;
 
-    const newStudent = await studentModel.create(studentData);
+    const newStudent = await studentModel.create(studentDataPayload);
     return newStudent;
   }
 };
