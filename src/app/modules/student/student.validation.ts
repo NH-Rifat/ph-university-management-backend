@@ -71,6 +71,7 @@ export const createStudentValidationSchema = z.object({
         }),
       }),
       profileImg: z.string(),
+      // admissionSemester: z.string(),
       // isDeleted: z.boolean(),
     }),
   }),
