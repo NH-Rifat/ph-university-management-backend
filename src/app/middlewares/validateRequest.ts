@@ -13,6 +13,5 @@ export const validateRequest = (schema: AnyZodObject) => {
     } catch (error) {
       next(error);
     }
-    next();
   };
 };

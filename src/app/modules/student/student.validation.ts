@@ -4,6 +4,8 @@ export const createStudentValidationSchema = z.object({
   body: z.object({
     password: z.string(),
     student: z.object({
+      id: z.string(),
+      password: z.string(),
       name: z.object({
         firstName: z.string().max(20, {
           message: "First Name cannot be more than 20 characters",
@@ -14,9 +16,10 @@ export const createStudentValidationSchema = z.object({
           message: "Last Name cannot be more than 20 characters",
         }),
       }),
+      // user: z.string(),
       gender: z.enum(["male", "female"]),
       // dateOfBirth will be the optional field as well
-      dateOfBirth: z.date().optional(),
+      dateOfBirth: z.string().optional(),
       email: z.string().email({
         message: "Invalid email format",
       }),
@@ -68,6 +71,7 @@ export const createStudentValidationSchema = z.object({
         }),
       }),
       profileImg: z.string(),
+      // isDeleted: z.boolean(),
     }),
   }),
 });

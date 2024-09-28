@@ -1,24 +1,23 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, RequestHandler, Response } from "express";
-import { UserServices } from "./user.service";
 import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
+import { AcademicSemesterServices } from "./academicSemester.service";
 
-const createStudent = catchAsync(async (req, res, next) => {
-  const { password, student: studentData } = req.body;
-  console.log("studentData", studentData);
-
-  const result = await UserServices.createStudentIntoDB(password, studentData);
+const academicSemester = catchAsync(async (req, res, next) => {
+  const result = await AcademicSemesterServices.creteAcademicSemesterIntoDB(
+    req.body
+  );
   sendResponse(res, {
     statusCode: httpStatus.OK,
-    message: "Student created successfully",
+    message: "Academic semester is created successfully",
     success: true,
     data: result,
   });
 });
 
-export const userControllers = {
-  createStudent,
+export const academicSemesterControllers = {
+  academicSemester,
 };

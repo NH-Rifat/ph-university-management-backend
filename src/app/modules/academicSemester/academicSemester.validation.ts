@@ -8,9 +8,9 @@ import {
 export const createAcademicSemesterValidationSchema = z.object({
   body: z.object({
     name: z.enum([...academicSemesterNames] as [string, ...string[]]),
-    year: z.date(),
+    year: z.string(),
     code: z.enum([...academicSemesterCode] as [string, ...string[]]),
-    startDate: z.enum([...Months] as [string, ...string[]]),
-    endDate: z.enum([...Months] as [string, ...string[]]),
+    startMonth: z.enum([...Months] as [string, ...string[]]),
+    endMonth: z.enum([...Months] as [string, ...string[]]),
   }),
 });
