@@ -23,6 +23,7 @@ const createStudentIntoDB = async (
   const findAdmissionSemester = await AcademicSemesterModel.findById(
     studentDataPayload.admissionSemester
   );
+  console.log("findAdmissionSemester", findAdmissionSemester);
   //set generated id
   if (!findAdmissionSemester) {
     throw new Error("Admission semester not found");
@@ -34,6 +35,7 @@ const createStudentIntoDB = async (
 
   //create a student
   if (Object.keys(result).length > 0) {
+    // console.log("result", result);
     //set id, _id as user
     studentDataPayload.id = result.id;
     studentDataPayload.user = result._id; //reference_id
