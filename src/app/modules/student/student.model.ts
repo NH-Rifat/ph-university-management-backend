@@ -83,7 +83,16 @@ const studentSchema = new Schema<TStudent>({
     required: false,
   },
   profileImg: { type: String, required: true },
-  admissionSemester: { type: Schema.Types.ObjectId, required: true },
+  academicDepartment: {
+    type: Schema.Types.ObjectId,
+    ref: "academicDepartment",
+    required: true,
+  },
+  admissionSemester: {
+    type: Schema.Types.ObjectId,
+    ref: "AcademicSemester",
+    required: true,
+  },
   isDeleted: { type: Boolean, default: false },
 });
 
@@ -100,7 +109,7 @@ studentSchema.pre("find", function (this: any, next) {
 });
 
 studentSchema.pre("aggregate", async function (next) {
-  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: false } } });
   next();
 });
 

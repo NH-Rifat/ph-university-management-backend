@@ -10,7 +10,8 @@ const createAcademicDepartmentIntoDB = async (
 };
 
 const getAcademicDepartmentsFromDB = async () => {
-  const academicDepartments = await AcademicDepartmentModel.find();
+  const academicDepartments =
+    await AcademicDepartmentModel.find().populate("academicFaculty");
   return academicDepartments;
 };
 

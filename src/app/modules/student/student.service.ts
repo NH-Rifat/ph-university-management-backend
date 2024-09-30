@@ -1,7 +1,15 @@
 import { studentModel } from "./student.model";
 
 const getAllStudentsFromDB = async () => {
-  const result = await studentModel.find();
+  const result = await studentModel
+    .find()
+    .populate({
+      path: "academicDepartment",
+      populate: {
+        path: "academicFaculty",
+      },
+    })
+    .populate("admissionSemester");
   return result;
 };
 const deleteStudentByIdFromDB = async (id: string) => {
@@ -10,8 +18,16 @@ const deleteStudentByIdFromDB = async (id: string) => {
 };
 
 const getStudentByIdFromDB = async (id: string) => {
-  // const result = await studentModel.findOne({ id });
-  const result = await studentModel.aggregate([{ $match: { id } }]);
+  const result = await studentModel
+    .findById({ _id: id })
+    .populate({
+      path: "academicDepartment",
+      populate: {
+        path: "academicFaculty",
+      },
+    })
+    .populate("admissionSemester");
+  // const result = await studentModel.aggregate([{ $match: { id } }]);
   return result;
 };
 
