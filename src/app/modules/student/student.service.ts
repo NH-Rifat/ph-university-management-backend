@@ -3,6 +3,8 @@
 import mongoose from "mongoose";
 import { studentModel } from "./student.model";
 import { UserModel } from "../user/user.model";
+import { TStudent } from "./student.interface";
+import AppError from "../../errors/AppError";
 
 const getAllStudentsFromDB = async () => {
   const result = await studentModel
@@ -49,12 +51,13 @@ const deleteStudentByIdFromDB = async (id: string) => {
   } catch (error) {
     await session.abortTransaction();
     await session.endSession;
+    throw new AppError(400, " Failed to delete student");
   }
 };
 
 const getStudentByIdFromDB = async (id: string) => {
   const result = await studentModel
-    .findById({ _id: id })
+    .findOne({ id })
     .populate({
       path: "academicDepartment",
       populate: {
@@ -66,8 +69,44 @@ const getStudentByIdFromDB = async (id: string) => {
   return result;
 };
 
+const updateStudentByIdFromDB = async (
+  id: string,
+  studentDataPayload: Partial<TStudent>
+) => {
+  const { name, guardian, localGuardian, ...remainingData } =
+    studentDataPayload;
+
+  const modifiedUpdatedStudentData: Record<string, unknown> = {
+    ...remainingData,
+  };
+
+  if (name && Object.keys(name).length) {
+    for (const [key, value] of Object.entries(name)) {
+      modifiedUpdatedStudentData[`name.${key}`] = value;
+    }
+  }
+  if (guardian && Object.keys(guardian).length) {
+    for (const [key, value] of Object.entries(guardian)) {
+      modifiedUpdatedStudentData[`guardian.${key}`] = value;
+    }
+  }
+  if (localGuardian && Object.keys(localGuardian).length) {
+    for (const [key, value] of Object.entries(localGuardian)) {
+      modifiedUpdatedStudentData[`localGuardian.${key}`] = value;
+    }
+  }
+
+  const updatedStudent = await studentModel.findOneAndUpdate(
+    { id },
+    modifiedUpdatedStudentData,
+    { new: true, runValidators: true }
+  );
+  return updatedStudent;
+};
+
 export const studentService = {
   getAllStudentsFromDB,
   getStudentByIdFromDB,
   deleteStudentByIdFromDB,
+  updateStudentByIdFromDB,
 };

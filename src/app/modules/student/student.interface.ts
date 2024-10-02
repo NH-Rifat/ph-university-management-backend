@@ -35,7 +35,7 @@ export type TStudent = {
   bloodGroup?: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
   presentAddress: string;
   permanentAddress: string;
-  guardianName: TGuardian;
+  guardian: TGuardian;
   localGuardian: TLocalGuardian;
   profileImg: string;
   academicDepartment: Types.ObjectId;

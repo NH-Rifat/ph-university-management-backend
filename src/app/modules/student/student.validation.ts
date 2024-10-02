@@ -36,7 +36,7 @@ export const createStudentValidationSchema = z.object({
       permanentAddress: z.string().nonempty({
         message: "Permanent address is required",
       }),
-      guardianName: z.object({
+      guardian: z.object({
         fatherName: z.string().nonempty({
           message: "Father’s name is required",
         }),
@@ -71,6 +71,57 @@ export const createStudentValidationSchema = z.object({
         }),
       }),
       profileImg: z.string(),
+      // admissionSemester: z.string(),
+      // isDeleted: z.boolean(),
+    }),
+  }),
+});
+
+export const updateStudentValidationSchema = z.object({
+  body: z.object({
+    password: z.string().optional(),
+    student: z.object({
+      id: z.string().optional(),
+      password: z.string().optional(),
+      name: z
+        .object({
+          firstName: z.string().optional(),
+          // middleName will be the optional field
+          middleName: z.string().optional(),
+          lastName: z.string().optional(),
+        })
+        .optional(),
+      // user: z.string(),
+      gender: z.enum(["male", "female"]).optional(),
+      // dateOfBirth will be the optional field as well
+      dateOfBirth: z.string().optional(),
+      email: z.string().optional(),
+      contactNo: z.string().optional(),
+      emergenceContactNo: z.string().optional(),
+      bloodGroup: z
+        .enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])
+        .optional(),
+      presentAddress: z.string().optional(),
+      permanentAddress: z.string().optional(),
+      guardian: z
+        .object({
+          fatherName: z.string().optional(),
+          fatherOccupation: z.string().optional(),
+          fatherContactNo: z.string().optional(),
+          motherName: z.string().optional(),
+          motherOccupation: z.string().optional(),
+          motherContactNo: z.string().optional(),
+        })
+        .optional(),
+      localGuardian: z
+        .object({
+          name: z.string().optional(),
+          occupation: z.string().optional(),
+          contactNo: z.string().optional(),
+          address: z.string().optional(),
+        })
+        .optional(),
+      profileImg: z.string().optional(),
       // admissionSemester: z.string(),
       // isDeleted: z.boolean(),
     }),

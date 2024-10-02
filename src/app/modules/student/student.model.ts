@@ -74,7 +74,7 @@ const studentSchema = new Schema<TStudent>({
   },
   presentAddress: { type: String, required: true },
   permanentAddress: { type: String, required: true },
-  guardianName: {
+  guardian: {
     type: guardianSchema,
     required: true,
   },
