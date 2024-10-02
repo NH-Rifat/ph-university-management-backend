@@ -6,9 +6,27 @@ import { UserModel } from "../user/user.model";
 import { TStudent } from "./student.interface";
 import AppError from "../../errors/AppError";
 
-const getAllStudentsFromDB = async () => {
+const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
+  const searchableFields = [
+    "email",
+    "id",
+    "gender",
+    "name.firstName",
+    "name.lastName",
+    "guardian.name",
+    "localGuardian.name",
+  ];
+  let searchTerm = "";
+  if (query.searchTerm) {
+    searchTerm = query.searchTerm.toString();
+  }
+
   const result = await studentModel
-    .find()
+    .find({
+      $or: searchableFields.map((key) => ({
+        [key]: { $regex: searchTerm, $options: "i" },
+      })),
+    })
     .populate({
       path: "academicDepartment",
       populate: {
