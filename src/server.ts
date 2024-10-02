@@ -1,8 +1,9 @@
 import app from "./app";
 import config from "./app/config";
-
+import { Server } from "http";
 import mongoose from "mongoose";
 
+let server: Server;
 async function main() {
   try {
     await mongoose.connect(config.database_url as string);
@@ -15,3 +16,18 @@ async function main() {
 }
 
 main();
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+  if (server) {
+    server.close(() => {
+      process.exit(1);
+    });
+  }
+  process.exit(1);
+});
+
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught Exception thrown", error);
+  process.exit(1);
+});
