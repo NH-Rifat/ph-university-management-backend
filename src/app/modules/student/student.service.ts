@@ -7,6 +7,7 @@ import { TStudent } from "./student.interface";
 import AppError from "../../errors/AppError";
 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
+  const queryObj = { ...query };
   const searchableFields = [
     "email",
     "id",
@@ -21,7 +22,7 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
     searchTerm = query.searchTerm.toString();
   }
 
-  const result = await studentModel
+  const searchQuery = studentModel
     .find({
       $or: searchableFields.map((key) => ({
         [key]: { $regex: searchTerm, $options: "i" },
@@ -34,7 +35,38 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
       },
     })
     .populate("admissionSemester");
-  return result;
+
+  // filtering
+  const excludedFields = ["searchTerm", "limit", "page", "sort"];
+  excludedFields.forEach((field) => {
+    delete queryObj[field];
+  });
+
+  const filterQuery = searchQuery
+    .find(queryObj)
+    .populate({
+      path: "academicDepartment",
+      populate: {
+        path: "academicFaculty",
+      },
+    })
+    .populate("admissionSemester");
+
+  // sorting
+  let sort = "-createdAt";
+  if (query.sort) {
+    sort = query.sort.toString();
+  }
+  const sortQuery = filterQuery.sort(sort);
+
+  // set limit
+  let limit = 1;
+  if (query.limit) {
+    limit = Number(query.limit) || 1;
+  }
+  const limitQuery = await sortQuery.limit(limit);
+
+  return limitQuery;
 };
 const deleteStudentByIdFromDB = async (id: string) => {
   const session = await mongoose.startSession();
