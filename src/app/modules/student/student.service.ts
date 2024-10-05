@@ -11,7 +11,7 @@ import { searchableFields } from "./student.constant";
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   const searchTerm = query.searchTerm ? query.searchTerm.toString() : "";
   const studentQuery = new QueryBuilders(studentModel.find(), query)
-    .search(searchableFields, searchTerm)
+    .search(searchableFields)
     .filter()
     .sort()
     .paginate()
