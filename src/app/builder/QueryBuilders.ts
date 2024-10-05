@@ -35,7 +35,7 @@ class QueryBuilders<T> {
   sort() {
     let sort = "-createdAt";
     if (this.query.sort) {
-      sort = this.query.sort.toString();
+      sort = this.query.sort.toString().split(",").join(" ");
     }
     this.modelQuery = this.modelQuery.sort(sort);
     return this;
