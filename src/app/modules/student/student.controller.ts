@@ -14,8 +14,8 @@ const getAllStudents = catchAsync(async (req, res, next) => {
 });
 
 const getStudentById = catchAsync(async (req, res, next) => {
-  const { studentId } = req.params;
-  const result = await studentService.getStudentByIdFromDB(studentId);
+  const { id } = req.params;
+  const result = await studentService.getStudentByIdFromDB(id);
   res.status(200).json({
     data: result,
     success: true,
@@ -24,12 +24,9 @@ const getStudentById = catchAsync(async (req, res, next) => {
 });
 
 const updateStudentById = catchAsync(async (req, res, next) => {
-  const { studentId } = req.params;
+  const { id } = req.params;
   const { student } = req.body;
-  const result = await studentService.updateStudentByIdFromDB(
-    studentId,
-    student
-  );
+  const result = await studentService.updateStudentByIdFromDB(id, student);
   res.status(200).json({
     data: result,
     success: true,
@@ -38,8 +35,8 @@ const updateStudentById = catchAsync(async (req, res, next) => {
 });
 
 const deleteStudentById = catchAsync(async (req, res, next) => {
-  const { studentId } = req.params;
-  const result = await studentService.deleteStudentByIdFromDB(studentId);
+  const { id } = req.params;
+  const result = await studentService.deleteStudentByIdFromDB(id);
   res.status(200).json({
     data: result,
     success: true,

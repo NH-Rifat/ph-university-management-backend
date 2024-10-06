@@ -29,19 +29,18 @@ const deleteStudentByIdFromDB = async (id: string) => {
   try {
     session.startTransaction();
 
-    const deletedStudent = await studentModel.findOneAndUpdate(
-      { id },
+    const deletedStudent = await studentModel.findByIdAndUpdate(
+      id,
       { isDeleted: true },
-      {
-        new: true,
-        session,
-      }
+      { new: true, session }
     );
     if (!deletedStudent) {
       throw new Error("Student not found");
     }
-    const deletedUser = await UserModel.findOneAndUpdate(
-      { id },
+    // get user id from deletedStudent
+    const userId = deletedStudent.user;
+    const deletedUser = await UserModel.findByIdAndUpdate(
+      userId,
       { isDeleted: true },
       {
         new: true,
@@ -102,8 +101,8 @@ const updateStudentByIdFromDB = async (
     }
   }
 
-  const updatedStudent = await studentModel.findOneAndUpdate(
-    { id },
+  const updatedStudent = await studentModel.findByIdAndUpdate(
+    id,
     modifiedUpdatedStudentData,
     { new: true, runValidators: true }
   );
