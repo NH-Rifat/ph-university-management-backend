@@ -18,7 +18,7 @@ const createCourse = catchAsync(async (req, res, next) => {
 
 // get all course
 const getAllCourses = catchAsync(async (req, res, next) => {
-  const result = await courseService.getAllCoursesFromDB();
+  const result = await courseService.getAllCoursesFromDB(req.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: "All courses are retrieved successfully",
