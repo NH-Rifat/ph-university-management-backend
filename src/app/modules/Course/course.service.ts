@@ -33,20 +33,17 @@ const getSingleCourseFromDB = async (id: string) => {
 const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
   const { preRequisiteCourses, ...courseRemainingData } = payload;
   // step -1: update basic course data
-  const updatedBasicCourse = await Course.findByIdAndUpdate(
-    id,
-    courseRemainingData,
-    {
-      new: true,
-    }
-  );
+  await Course.findByIdAndUpdate(id, courseRemainingData, {
+    new: true,
+  });
+
   // check if there is any pre-requisite courses are updated
   if (preRequisiteCourses && preRequisiteCourses.length > 0) {
     // filter out the deleted fields
     const deletedPreRequisiteCoursesId = preRequisiteCourses
       .filter((el) => el.course && el.isDeleted)
       .map((el) => el.course);
-    const deletedPreRequisiteCourses = await Course.findByIdAndUpdate(
+    await Course.findByIdAndUpdate(
       id,
       {
         $pull: {
@@ -54,23 +51,31 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
             course: { $in: deletedPreRequisiteCoursesId },
           },
         },
-      }
-      // { new: true }
+      },
+      { new: true }
     );
 
-    return updatedBasicCourse;
+    // filter out the updated fields
+    const updatedPreRequisiteCourses = preRequisiteCourses.filter(
+      (el) => el.course && !el.isDeleted
+    );
+    // update the updated fields
+    await Course.findByIdAndUpdate(
+      id,
+      {
+        $addToSet: {
+          preRequisiteCourses: { $each: updatedPreRequisiteCourses },
+        },
+      },
+      { new: true }
+    );
   }
 
-  // step -2: update pre-requisite course data
-  // if (preRequisiteCourses) {
-  //   const preRequisiteCourseIds = preRequisiteCourses.map(
-  //     (course) => course.course
-  //   );
-  //   await Course.updateMany(
-  //     { _id: { $in: preRequisiteCourseIds } },
-  //     { $addToSet: { preRequisiteCourses: { course: id } } }
-  //   );
-  // }
+  const result = await Course.findById(id).populate(
+    "preRequisiteCourses.course"
+  );
+  console.log("result", result);
+  return result;
 };
 
 const deleteCourseFromDB = async (id: string) => {
