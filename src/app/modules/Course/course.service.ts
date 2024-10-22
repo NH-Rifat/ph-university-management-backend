@@ -24,14 +24,54 @@ const getAllCoursesFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getSingleCourseFromDB = async (id: string) => {
-  const result = await Course.findById(id);
+  const result = await Course.findById(id).populate(
+    "preRequisiteCourses.course"
+  );
   return result;
 };
 
-// const updateCourseIntoDB = async (id: string, course: Course) => {
-//   const result = await Course.findByIdAndUpdate(id, course, { new: true });
-//   return result;
-// };
+const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
+  const { preRequisiteCourses, ...courseRemainingData } = payload;
+  // step -1: update basic course data
+  const updatedBasicCourse = await Course.findByIdAndUpdate(
+    id,
+    courseRemainingData,
+    {
+      new: true,
+    }
+  );
+  // check if there is any pre-requisite courses are updated
+  if (preRequisiteCourses && preRequisiteCourses.length > 0) {
+    // filter out the deleted fields
+    const deletedPreRequisiteCoursesId = preRequisiteCourses
+      .filter((el) => el.course && el.isDeleted)
+      .map((el) => el.course);
+    const deletedPreRequisiteCourses = await Course.findByIdAndUpdate(
+      id,
+      {
+        $pull: {
+          preRequisiteCourses: {
+            course: { $in: deletedPreRequisiteCoursesId },
+          },
+        },
+      }
+      // { new: true }
+    );
+
+    return updatedBasicCourse;
+  }
+
+  // step -2: update pre-requisite course data
+  // if (preRequisiteCourses) {
+  //   const preRequisiteCourseIds = preRequisiteCourses.map(
+  //     (course) => course.course
+  //   );
+  //   await Course.updateMany(
+  //     { _id: { $in: preRequisiteCourseIds } },
+  //     { $addToSet: { preRequisiteCourses: { course: id } } }
+  //   );
+  // }
+};
 
 const deleteCourseFromDB = async (id: string) => {
   const result = await Course.findByIdAndUpdate(
@@ -47,4 +87,5 @@ export const courseService = {
   getAllCoursesFromDB,
   getSingleCourseFromDB,
   deleteCourseFromDB,
+  updateCourseIntoDB,
 };
