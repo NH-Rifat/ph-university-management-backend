@@ -42,7 +42,15 @@ const getAllSemesterRegistrationFromDB = async (
   return result;
 };
 
+// get single semester registration
+const getSingleSemesterRegistrationFromDB = async (id: string) => {
+  const result =
+    await SemesterRegistration.findById(id).populate("academicSemester");
+  return result;
+};
+
 export const semesterRegistrationService = {
   createSemesterRegistration,
   getAllSemesterRegistrationFromDB,
+  getSingleSemesterRegistrationFromDB,
 };
