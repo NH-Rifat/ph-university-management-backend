@@ -37,3 +37,9 @@ export const updateValidationCourseSchemaOptional =
       isDeleted: z.boolean().optional(),
     }),
   });
+
+export const assignFacultiesWithCourseValidationSchema = z.object({
+  body: z.object({
+    faculties: z.array(z.string().min(1).max(255)).optional(),
+  }),
+});
