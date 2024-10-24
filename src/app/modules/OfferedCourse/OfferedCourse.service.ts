@@ -116,6 +116,7 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
     endTime,
   };
 
+  // check the faculty is available at that time
   if (hasTimeConflict(assignedSchedules, newSchedule)) {
     throw new AppError(
       httpStatus.CONFLICT,
