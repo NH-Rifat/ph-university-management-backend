@@ -1,11 +1,12 @@
 import { model, Schema } from "mongoose";
-import { TUser } from "./user.interface";
+import { TUser, UserModel } from "./user.interface";
 import bcrypt from "bcrypt";
 import config from "../../config";
-const userSchema = new Schema<TUser>(
+
+const userSchema = new Schema<TUser, UserModel>(
   {
     id: { type: String, required: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true, select: false },
     needPasswordChange: { type: Boolean, default: true },
     role: {
       type: String,
@@ -39,4 +40,17 @@ userSchema.post("save", async function (doc, next) {
   next();
 });
 
-export const UserModel = model<TUser>("User", userSchema);
+// static method for checking if the user is exist by custom id
+userSchema.statics.isUserExistByCustomId = async function (id: string) {
+  return await User.findOne({ id });
+};
+
+// static method for checking if the user given password is correct
+userSchema.statics.isPasswordMatched = async function (
+  plainTextPassword,
+  hashedPassword
+) {
+  return await bcrypt.compare(plainTextPassword, hashedPassword);
+};
+
+export const User = model<TUser, UserModel>("User", userSchema);

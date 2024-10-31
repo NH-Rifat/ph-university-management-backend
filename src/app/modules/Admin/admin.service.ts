@@ -6,7 +6,7 @@ import { AdminSearchableFields } from "./admin.constant";
 import { TAdmin } from "./admin.interface";
 import { Admin } from "./admin.model";
 import QueryBuilder from "../../builder/QueryBuilders";
-import { UserModel } from "../user/user.model";
+import { User } from "../user/user.model";
 
 const getAllAdminsFromDB = async (query: Record<string, unknown>) => {
   const adminQuery = new QueryBuilder(Admin.find(), query)
@@ -64,7 +64,7 @@ const deleteAdminFromDB = async (id: string) => {
     // get user _id from deletedAdmin
     const userId = deletedAdmin.user;
 
-    const deletedUser = await UserModel.findOneAndUpdate(
+    const deletedUser = await User.findOneAndUpdate(
       userId,
       { isDeleted: true },
       { new: true, session }

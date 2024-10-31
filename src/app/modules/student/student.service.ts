@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import mongoose from "mongoose";
 import { studentModel } from "./student.model";
-import { UserModel } from "../user/user.model";
+import { User } from "../user/user.model";
 import { TStudent } from "./student.interface";
 import AppError from "../../errors/AppError";
 import QueryBuilders from "../../builder/QueryBuilders";
@@ -39,7 +39,7 @@ const deleteStudentByIdFromDB = async (id: string) => {
     }
     // get user id from deletedStudent
     const userId = deletedStudent.user;
-    const deletedUser = await UserModel.findByIdAndUpdate(
+    const deletedUser = await User.findByIdAndUpdate(
       userId,
       { isDeleted: true },
       {

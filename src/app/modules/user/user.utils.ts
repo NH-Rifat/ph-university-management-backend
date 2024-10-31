@@ -1,12 +1,12 @@
 import { TAcademicSemester } from "../academicSemester/academicSemester.interface";
-import { UserModel } from "./user.model";
+import { User } from "./user.model";
 
 // find last student id
 export const findLastStudentId = async (
   admissionSemesterPayload: TAcademicSemester
 ) => {
   const { year, code } = admissionSemesterPayload;
-  const lastStudent = await UserModel.findOne({
+  const lastStudent = await User.findOne({
     role: "student",
     id: new RegExp(`^${year}${code}`),
   })
@@ -15,7 +15,7 @@ export const findLastStudentId = async (
   return lastStudent?.id;
 };
 export const findLastFacultyId = async () => {
-  const lastFaculty = await UserModel.findOne({
+  const lastFaculty = await User.findOne({
     role: "faculty",
   })
     .sort({ id: -1 })
@@ -64,7 +64,7 @@ export const generateFacultyId = async () => {
 
 // Admin ID
 export const findLastAdminId = async () => {
-  const lastAdmin = await UserModel.findOne(
+  const lastAdmin = await User.findOne(
     {
       role: "admin",
     },
