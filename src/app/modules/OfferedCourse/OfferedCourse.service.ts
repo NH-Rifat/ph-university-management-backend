@@ -89,7 +89,6 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   }
 
   // check if the same offered course same section in same registered semester exists
-
   const isSameOfferedCourseExistsWithSameRegisteredSemesterWithSameSection =
     await OfferedCourse.findOne({
       semesterRegistration,
@@ -145,10 +144,6 @@ const getAllOfferedCoursesFromDB = async (query: Record<string, unknown>) => {
 
 const getSingleOfferedCourseFromDB = async (id: string) => {
   const offeredCourse = await OfferedCourse.findById(id);
-
-  if (!offeredCourse) {
-    throw new AppError(404, "Offered Course not found");
-  }
 
   return offeredCourse;
 };

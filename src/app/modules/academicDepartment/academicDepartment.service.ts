@@ -25,7 +25,7 @@ const updateAcademicDepartmentIntoDB = async (
   academicDepartmentPayload: Partial<TAcademicDepartment>
 ) => {
   const result = await AcademicDepartmentModel.findByIdAndUpdate(
-    { _id: id },
+    id,
     academicDepartmentPayload,
     { new: true }
   );

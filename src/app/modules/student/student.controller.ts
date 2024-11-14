@@ -14,6 +14,7 @@ const getAllStudents = catchAsync(async (req, res, next) => {
 });
 
 const getStudentById = catchAsync(async (req, res, next) => {
+  console.log("get student by id from controller");
   const { id } = req.params;
   const result = await studentService.getStudentByIdFromDB(id);
   res.status(200).json({

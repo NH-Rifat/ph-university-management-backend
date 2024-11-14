@@ -21,26 +21,22 @@ const auth = (...requiredRoles: TUSerRole[]) => {
       token,
       config.jwt_access_secret as string
     ) as JwtPayload;
-
     const { role, userId, iat } = decoded;
 
     // checking if the user is exist
     const user = await User.isUserExistByCustomId(userId);
-
     if (!user) {
       throw new AppError(httpStatus.NOT_FOUND, "This user is not found !");
     }
+
     // checking if the user is already deleted
-
     const isDeleted = user?.isDeleted;
-
     if (isDeleted) {
       throw new AppError(httpStatus.FORBIDDEN, "This user is deleted !");
     }
 
     // checking if the user is blocked
     const userStatus = user?.status;
-
     if (userStatus === "blocked") {
       throw new AppError(httpStatus.FORBIDDEN, "This user is blocked ! !");
     }
@@ -56,10 +52,7 @@ const auth = (...requiredRoles: TUSerRole[]) => {
     }
 
     if (requiredRoles && !requiredRoles.includes(role)) {
-      throw new AppError(
-        httpStatus.UNAUTHORIZED,
-        "You are not authorized  hi!"
-      );
+      throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized !");
     }
 
     req.user = decoded as JwtPayload;

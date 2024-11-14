@@ -20,6 +20,7 @@ import { TFaculty } from "../faculty/faculty.interface";
 import { AcademicDepartmentModel } from "../academicDepartment/academicDepartment.mode";
 import { Faculty } from "../faculty/faculty.mode";
 import { Admin } from "../Admin/admin.model";
+import { TAdmin } from "../Admin/admin.interface";
 
 const createStudentIntoDB = async (
   password: string,
@@ -134,11 +135,11 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
   }
 };
 
-const createAdminIntoDB = async (password: string, payload: TFaculty) => {
+const createAdminIntoDB = async (password: string, payload: TAdmin) => {
   // create a user object
   const userData: Partial<TUser> = {};
 
-  //if password is not given , use deafult password
+  //if password is not given , use default password
   userData.password = password || (config.default_password as string);
 
   //set student role

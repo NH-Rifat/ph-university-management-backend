@@ -9,7 +9,6 @@ import QueryBuilders from "../../builder/QueryBuilders";
 import { searchableFields } from "./student.constant";
 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
-  const searchTerm = query.searchTerm ? query.searchTerm.toString() : "";
   const studentQuery = new QueryBuilders(studentModel.find(), query)
     .search(searchableFields)
     .filter()
@@ -61,8 +60,9 @@ const deleteStudentByIdFromDB = async (id: string) => {
 };
 
 const getStudentByIdFromDB = async (id: string) => {
+  console.log("get student by id from service");
   const result = await studentModel
-    .findOne({ id })
+    .findById(id)
     .populate({
       path: "academicDepartment",
       populate: {
@@ -70,7 +70,6 @@ const getStudentByIdFromDB = async (id: string) => {
       },
     })
     .populate("admissionSemester");
-  // const result = await studentModel.aggregate([{ $match: { id } }]);
   return result;
 };
 

@@ -36,9 +36,8 @@ userSchema.pre("save", async function (next) {
 });
 
 // post hook save middleware/hook set '' after saving the password
-userSchema.post("save", async function (doc, next) {
-  doc.password = "";
-  next();
+userSchema.post("save", async function () {
+  this.password = "";
 });
 
 // static method for checking if the user is exist by custom id
@@ -54,7 +53,7 @@ userSchema.statics.isPasswordMatched = async function (
   return await bcrypt.compare(plainTextPassword, hashedPassword);
 };
 
-// static method for checking if the jwt is issued before password changedf
+// static method for checking if the jwt is issued before password changed
 userSchema.statics.isJWTIssuedBeforePasswordChanged = function (
   passwordChangedTimestamp: Date,
   jwtIssuedTimestamp: number

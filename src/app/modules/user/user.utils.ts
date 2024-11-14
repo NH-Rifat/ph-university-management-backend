@@ -86,7 +86,7 @@ export const generateAdminId = async () => {
   const lastAdminId = await findLastAdminId();
 
   if (lastAdminId) {
-    currentId = lastAdminId.substring(2);
+    currentId = lastAdminId;
   }
 
   let incrementId = (Number(currentId) + 1).toString().padStart(4, "0");

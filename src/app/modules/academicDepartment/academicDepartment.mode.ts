@@ -3,14 +3,13 @@ import { TAcademicDepartment } from "./academicDepartment.interface";
 import AppError from "../../errors/AppError";
 import httpStatus from "http-status";
 
-const academicFacultySchema = new Schema<TAcademicDepartment>(
+const academicDepartmentSchema = new Schema<TAcademicDepartment>(
   {
     name: {
       type: String,
       required: true,
       unique: true,
     },
-
     academicFaculty: {
       type: Schema.Types.ObjectId,
       ref: "academicFaculty",
@@ -23,7 +22,7 @@ const academicFacultySchema = new Schema<TAcademicDepartment>(
 );
 
 // pre hook for checking the department name is exist or not
-academicFacultySchema.pre("save", async function (next) {
+academicDepartmentSchema.pre("save", async function (next) {
   const department = this as TAcademicDepartment;
   const isDepartmentExist = await AcademicDepartmentModel.findOne({
     name: department.name,
@@ -35,11 +34,9 @@ academicFacultySchema.pre("save", async function (next) {
 });
 
 // pre hook the department id before update is exist or not
-academicFacultySchema.pre("findOneAndUpdate", async function (next) {
+academicDepartmentSchema.pre("findOneAndUpdate", async function (next) {
   const query = this.getQuery();
-  const isDepartmentExist = await AcademicDepartmentModel.findOne({
-    _id: query._id,
-  });
+  const isDepartmentExist = await AcademicDepartmentModel.findById(query._id);
   if (!isDepartmentExist) {
     throw new AppError(404, "Department not found");
   }
@@ -48,5 +45,5 @@ academicFacultySchema.pre("findOneAndUpdate", async function (next) {
 
 export const AcademicDepartmentModel = model<TAcademicDepartment>(
   "academicDepartment",
-  academicFacultySchema
+  academicDepartmentSchema
 );

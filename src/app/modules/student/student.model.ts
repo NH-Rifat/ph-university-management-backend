@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Schema, model } from "mongoose";
 import {
+  student,
   TGuardian,
   TLocalGuardian,
   TStudent,
@@ -42,7 +43,7 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
   address: { type: String, required: true },
 });
 
-const studentSchema = new Schema<TStudent>({
+const studentSchema = new Schema<TStudent, student>({
   id: { type: String, required: true, unique: true },
   user: {
     type: Schema.Types.ObjectId,
@@ -98,7 +99,7 @@ const studentSchema = new Schema<TStudent>({
 
 // for creating a static method
 studentSchema.statics.isUserExists = async function (id: string) {
-  const existingUser = await studentModel.findOne({ id });
+  const existingUser = await studentModel.findById(id);
   return existingUser;
 };
 
@@ -108,10 +109,11 @@ studentSchema.pre("find", function (this: any, next) {
   next();
 });
 
-studentSchema.pre("aggregate", async function (next) {
-  this.pipeline().unshift({ $match: { isDeleted: { $ne: false } } });
+// query middleware for getting the single document by id and isDeleted is false
+studentSchema.pre("findOne", function (this: any, next) {
+  this.findOne({ isDeleted: { $ne: true } });
   next();
 });
 
 //Create a Model.
-export const studentModel = model<TStudent>("Student", studentSchema);
+export const studentModel = model<TStudent, student>("Student", studentSchema);

@@ -29,7 +29,7 @@ const semesterRegistrationSchema = new Schema<TSemesterRegistration>(
     },
     maxCredit: {
       type: Number,
-      default: 3,
+      default: 18,
     },
   },
   {
